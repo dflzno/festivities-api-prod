@@ -21,6 +21,16 @@ repositories {
     mavenCentral()
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-cargo-plugin:2.2.3'
+    }
+}
+
 dependencies {
 
 	ext {
@@ -60,3 +70,36 @@ dependencies {
     compile "ch.qos.logback:logback-classic:${logbackVersion}"
     compile "org.slf4j:jcl-over-slf4j:${jclOverSlf4jVersion}"
 }
+
+apply plugin: 'com.bmuschko.cargo'
+cargo {
+
+	ext {
+		port = 8080
+		context = 'festapivity'
+	}
+    containerId = 'tomcat8x'
+    port = ext.port
+
+    deployable {
+        context = ext.context
+    }
+
+    local {
+    	installer {
+            installUrl = 'http://www-us.apache.org/dist/tomcat/tomcat-8/v8.5.4/bin/apache-tomcat-8.5.4.zip'
+            downloadDir = file("$buildDir/download")
+            extractDir = file("$buildDir/extract")
+        }
+        homeDir = file('/home/user/dev/tools/apache-tomcat-6.0.32')
+        outputFile = file("$buildDir/output.log")
+        timeout = 60000
+    }
+}
+
+task printDeploymentMessage {
+	println "To test the application browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/ping"
+	println "To get the API details browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/help"
+}
+
+cargoRunLocal.dependsOn (assemble, printDeploymentMessage)
