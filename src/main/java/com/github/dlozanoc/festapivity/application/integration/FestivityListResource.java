@@ -5,6 +5,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.springframework.hateoas.Resource;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,5 +17,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FestivityListResource {
 	
-	@XmlElement(name="festivity") private List<FestivityResource> festivities;
+	@XmlElement(name="festivity") private List<Resource<FestivityResource>> festivities;
 }

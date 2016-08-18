@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -58,11 +59,11 @@ public class FestivityControllerTest {
 		when(festivityService.getAll()).thenReturn(Optional.of(festivities));
 		
 		// when
-		ResponseEntity<FestivityListResource> response = testSubject.getAll();
+		ResponseEntity<Resource<FestivityListResource>> response = testSubject.getAll();
 		
 		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(2, response.getBody().getFestivities().size());
+		assertEquals(2, response.getBody().getContent().getFestivities().size());
 	}
 	
 	@Test
@@ -71,7 +72,7 @@ public class FestivityControllerTest {
 		when(festivityService.getAll()).thenReturn(Optional.of(Collections.emptyList()));
 		
 		// when
-		ResponseEntity<FestivityListResource> response = testSubject.getAll();
+		ResponseEntity<Resource<FestivityListResource>> response = testSubject.getAll();
 		
 		// then
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -84,7 +85,7 @@ public class FestivityControllerTest {
 		when(festivityService.getAll()).thenReturn(Optional.empty());
 		
 		// when
-		ResponseEntity<FestivityListResource> response = testSubject.getAll();
+		ResponseEntity<Resource<FestivityListResource>> response = testSubject.getAll();
 		
 		// then
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());

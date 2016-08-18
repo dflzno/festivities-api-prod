@@ -34,43 +34,45 @@ buildscript {
 
 dependencies {
 
-	ext {
-		springVersion = '4.3.2.RELEASE'
-		slf4jVersion = '1.7.21'
-		mockitoVersion = '1.10.19'
-		javaxServletVersion = '3.1.0'
-		jacksonVersion = '2.7.4'
-		lombokVersion = '1.16.8'
-		logbackVersion = '1.1.7'
-		jclOverSlf4jVersion = '1.7.21'
-		junitVersion = '4.12'
-		h2Version = '1.4.192'
-		hibernateVersion = '5.2.1.Final'
-		springDataVersion = '1.10.2.RELEASE'
-	}
+    ext {
+        springVersion = '4.3.2.RELEASE'
+        slf4jVersion = '1.7.21'
+        mockitoVersion = '1.10.19'
+        javaxServletVersion = '3.1.0'
+        jacksonVersion = '2.7.4'
+        lombokVersion = '1.16.8'
+        logbackVersion = '1.1.7'
+        jclOverSlf4jVersion = '1.7.21'
+        junitVersion = '4.12'
+        h2Version = '1.4.192'
+        hibernateVersion = '5.2.1.Final'
+        springDataVersion = '1.10.2.RELEASE'
+        springHateoasVersion = '0.21.0.RELEASE'
+    }
 
     compile "org.slf4j:slf4j-api:${slf4jVersion}"
     compile "org.projectlombok:lombok:${lombokVersion}"
     
     //Web - Rest - Integration
-    compile "javax.servlet:javax.servlet-api:${javaxServletVersion}" 	
-   	compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
-   	compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+    compile "javax.servlet:javax.servlet-api:${javaxServletVersion}"    
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
     
     //Spring
     compile "org.springframework:spring-core:${springVersion}"
     compile "org.springframework:spring-context:${springVersion}"
-   	compile "org.springframework:spring-context-support:${springVersion}"
-   	runtime "org.springframework:spring-web:${springVersion}"
-   	runtime "org.springframework:spring-tx:${springVersion}"
-   	compile "org.springframework:spring-oxm:${springVersion}"
-   	compile "org.springframework:spring-webmvc:${springVersion}"
-   	compile "org.springframework:spring-jdbc:${springVersion}"
-   	compile "org.springframework:spring-orm:${springVersion}"
-   	compile "org.springframework.data:spring-data-jpa:${springDataVersion}"
-   	
-   	//Test
-   	testCompile "junit:junit:${junitVersion}"
+    compile "org.springframework:spring-context-support:${springVersion}"
+    runtime "org.springframework:spring-web:${springVersion}"
+    runtime "org.springframework:spring-tx:${springVersion}"
+    compile "org.springframework:spring-oxm:${springVersion}"
+    compile "org.springframework:spring-webmvc:${springVersion}"
+    compile "org.springframework:spring-jdbc:${springVersion}"
+    compile "org.springframework:spring-orm:${springVersion}"
+    compile "org.springframework.data:spring-data-jpa:${springDataVersion}"
+    compile "org.springframework.hateoas:spring-hateoas:${springHateoasVersion}"
+    
+    //Test
+    testCompile "junit:junit:${junitVersion}"
     testCompile "org.mockito:mockito-all:${mockitoVersion}"
     testCompile "org.springframework:spring-test:${springVersion}"
     
@@ -87,10 +89,10 @@ dependencies {
 apply plugin: 'com.bmuschko.cargo'
 cargo {
 
-	ext {
-		port = 8080
-		context = 'festapivity'
-	}
+    ext {
+        port = 8080
+        context = 'festapivity'
+    }
     containerId = 'tomcat8x'
     port = ext.port
 
@@ -99,7 +101,7 @@ cargo {
     }
 
     local {
-    	installer {
+        installer {
             installUrl = 'http://www-us.apache.org/dist/tomcat/tomcat-8/v8.5.4/bin/apache-tomcat-8.5.4.zip'
             downloadDir = file("$buildDir/download")
             extractDir = file("$buildDir/extract")
@@ -112,26 +114,26 @@ cargo {
 }
 
 task printDeploymentMessage {
-	println "To test the application browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/ping"
-	println "To get the API documentation browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/help"
+    println "To test the application browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/ping"
+    println "To get the API documentation browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/help"
 }
 
 cargoRunLocal.dependsOn (assemble, printDeploymentMessage)
 
 jacoco {
-	toolVersion = "0.7.7+"
+    toolVersion = "0.7.7+"
 }
 
 jacocoTestReport {
-	reports {
-		html {
-			enabled true
-		}
-		
-	}
-	
-	afterEvaluate {
-    	classDirectories = files(classDirectories.files.collect {
+    reports {
+        html {
+            enabled true
+        }
+        
+    }
+    
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
             fileTree(dir: it,
                     exclude: ['**/configuration/**'])
         })

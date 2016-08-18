@@ -1,10 +1,14 @@
 package com.github.dlozanoc.festapivity.application.festivities;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.github.dlozanoc.festapivity.application.domain.Festivity;
 import com.github.dlozanoc.festapivity.application.integration.FestivityListResource;
+import com.github.dlozanoc.festapivity.application.integration.FestivityResource;
 import com.github.dlozanoc.festapivity.application.integration.mappers.FestivityResourceMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +34,7 @@ public class FestivityController {
 	private FestivityResourceMapper festivityEntityMapper;
 
 	@RequestMapping(value = "/api/festivity", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-	public ResponseEntity<FestivityListResource> getAll() {
+	public ResponseEntity<Resource<FestivityListResource>> getAll() {
 		Optional<List<Festivity>> festivities = null;
 		
 		try {
@@ -37,8 +42,15 @@ public class FestivityController {
 			if(festivities.isPresent()) {
 				if(!festivities.get().isEmpty()) {
 					log.debug("Festivities found {}", festivities.get().stream().map(Object::toString).collect(Collectors.joining()));
-					return new ResponseEntity<FestivityListResource>(
-							new FestivityListResource(festivities.get().stream().map(f -> festivityEntityMapper.apply(f)).collect(Collectors.toList())),
+					return new ResponseEntity<Resource<FestivityListResource>>(
+							new Resource<FestivityListResource>(
+									new FestivityListResource(
+											festivities.get().stream().map(
+													f -> new Resource<FestivityResource>(
+															festivityEntityMapper.apply(f),
+															linkTo(methodOn(FestivityController.class).getAll()).withSelfRel()))
+											.collect(Collectors.toList())),
+									linkTo(methodOn(FestivityController.class).getAll()).withSelfRel()),
 							HttpStatus.OK);
 				}
 			} else {
