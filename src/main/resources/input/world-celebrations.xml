@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<world-celebrations>
+
+	<celebration>
+		<what>Carnaval do Rio de Janeiro</what>
+		<from>2016-02-04T00:00:00-03:00</from>
+		<to>2016-02-10T23:59:59-03:00</to>
+		<where>Rio de Janeiro</where>
+		
+	</celebration>
+	
+	<celebration>
+		<what>Oktoberfest</what>
+		<from>2016-09-17T11:00:00+02:00</from>
+		<to>2016-10-03T00:00:00+02:00</to>
+		<where>Munich</where>
+	</celebration>
+	
+	<celebration>
+		<what>Saint Patrick’s Day</what>
+		<from>2016-03-17T00:00:00+01:00</from>
+		<to>2016-03-17T23:59:59+01:00</to>
+		<where>Ireland</where>
+	</celebration>
+	
+	<celebration>
+		<what>La tomatina</what>
+		<from>2016-08-31T10:00:00+02:00</from>
+		<to>2016-08-31T11:00:00+02:00</to>
+		<where>Buñol</where>
+	</celebration>
+	
+	<celebration>
+		<what>Burning Man Festival</what>
+		<from>2016-08-28T00:00:00-07:00</from>
+		<to>2016-09-05T23:59:59-07:00</to>
+		<where>Blackrock Desert</where>
+	</celebration>
+	
+	<celebration>
+		<what>Holi</what>
+		<from>2017-03-12T00:00:00+05:30</from>
+		<to>2017-03-12T23:59:59+05:30</to>
+		<where>India</where>
+	</celebration>
+	
+	<celebration>
+		<what>Fake Celebration</what>
+		<from>2017-10-20T10:00:00+06:00</from>
+		<to>2017-10-20T09:59:59+06:00</to>
+		<where>Fake place</where>
+	</celebration>
+	
+</world-celebrations>

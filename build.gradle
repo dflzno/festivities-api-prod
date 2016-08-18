@@ -10,6 +10,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'war'
+apply plugin: 'jacoco'
 
 war {
     baseName = 'festapivity'
@@ -43,6 +44,9 @@ dependencies {
 		logbackVersion = '1.1.7'
 		jclOverSlf4jVersion = '1.7.21'
 		junitVersion = '4.12'
+		h2Version = '1.4.192'
+		hibernateVersion = '5.2.1.Final'
+		springDataVersion = '1.10.2.RELEASE'
 	}
 
     compile "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -61,14 +65,23 @@ dependencies {
    	runtime "org.springframework:spring-tx:${springVersion}"
    	compile "org.springframework:spring-oxm:${springVersion}"
    	compile "org.springframework:spring-webmvc:${springVersion}"
+   	compile "org.springframework:spring-jdbc:${springVersion}"
+   	compile "org.springframework:spring-orm:${springVersion}"
+   	compile "org.springframework.data:spring-data-jpa:${springDataVersion}"
    	
    	//Test
    	testCompile "junit:junit:${junitVersion}"
-    testCompile "org.mockito:mockito-all:${mockitoVersion}"   
+    testCompile "org.mockito:mockito-all:${mockitoVersion}"
+    testCompile "org.springframework:spring-test:${springVersion}"
     
     //Logging
     compile "ch.qos.logback:logback-classic:${logbackVersion}"
     compile "org.slf4j:jcl-over-slf4j:${jclOverSlf4jVersion}"
+    
+    //db
+    compile "com.h2database:h2:${h2Version}"
+    compile "org.hibernate:hibernate-core:${hibernateVersion}"
+    
 }
 
 apply plugin: 'com.bmuschko.cargo'
@@ -94,12 +107,35 @@ cargo {
         homeDir = file('/home/user/dev/tools/apache-tomcat-6.0.32')
         outputFile = file("$buildDir/output.log")
         timeout = 60000
+        jvmArgs = '-Duser.timezone=UTC'
     }
 }
 
 task printDeploymentMessage {
 	println "To test the application browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/ping"
-	println "To get the API details browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/help"
+	println "To get the API documentation browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/help"
 }
 
 cargoRunLocal.dependsOn (assemble, printDeploymentMessage)
+
+jacoco {
+	toolVersion = "0.7.7+"
+}
+
+jacocoTestReport {
+	reports {
+		html {
+			enabled true
+		}
+		
+	}
+	
+	afterEvaluate {
+    	classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['**/configuration/**'])
+        })
+    }
+}
+
+test.finalizedBy(project.tasks.jacocoTestReport)

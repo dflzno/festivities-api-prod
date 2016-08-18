@@ -2,10 +2,10 @@ package com.github.dlozanoc.festapivity.configuration;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableWebMvc
+@EnableJpaRepositories(basePackages = "com.github.dlozanoc.festapivity.application")
 @ComponentScan(basePackages = "com.github.dlozanoc.festapivity")
 public class ApplicationConfiguration {
 
