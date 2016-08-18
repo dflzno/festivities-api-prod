@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.dlozanoc.festapivity.application.domain.Festivity;
 import com.github.dlozanoc.festapivity.application.integration.FestivityListResource;
 import com.github.dlozanoc.festapivity.application.integration.FestivityResource;
+import com.github.dlozanoc.festapivity.application.integration.mappers.FestivityMapper;
 import com.github.dlozanoc.festapivity.application.integration.mappers.FestivityResourceMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +34,10 @@ public class FestivityController {
 	private FestivityService festivityService;
 
 	@Autowired
-	private FestivityResourceMapper festivityEntityMapper;
+	private FestivityResourceMapper festivityResourceMapper;
+	
+	@Autowired
+	private FestivityMapper festivityMapper;
 
 	@RequestMapping(value = "/api/festivity", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public ResponseEntity<FestivityListResource> getAll() {
@@ -47,7 +52,7 @@ public class FestivityController {
 					
 					FestivityResource resource = null;
 					for(Festivity f : festivities.get()) {
-						resource = festivityEntityMapper.apply(f);
+						resource = festivityResourceMapper.apply(f);
 						resource.add(linkTo(methodOn(FestivityController.class).getById(resource.getFestId())).withSelfRel());
 						resources.add(resource);
 					}
@@ -72,7 +77,7 @@ public class FestivityController {
 		try {
 			Optional<Festivity> festivity = festivityService.getById(id);
 			if(festivity.isPresent()) {
-				FestivityResource resource = festivityEntityMapper.apply(festivity.get());
+				FestivityResource resource = festivityResourceMapper.apply(festivity.get());
 				resource.add(linkTo(methodOn(FestivityController.class).getById(resource.getFestId())).withSelfRel());
 				return new ResponseEntity<FestivityResource>(resource, HttpStatus.OK);
 			} else {
@@ -83,5 +88,22 @@ public class FestivityController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	
+	}
+	
+	@RequestMapping(value = "/api/festivity", method = RequestMethod.POST)
+	public ResponseEntity<Void> save(@RequestBody FestivityResource resource) {
+		
+		try {
+			boolean result = festivityService.save(festivityMapper.apply(resource));
+			if(result) {
+				return new ResponseEntity<Void>(HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (Exception e) {
+			log.error("", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 }
