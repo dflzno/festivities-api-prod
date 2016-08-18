@@ -46,4 +46,13 @@ public class FestivityService {
 			return false;
 		}
 	}
+	
+	public Optional<Festivity> getById(Long id) {
+		try {
+			return Optional.of(toDomainMapper.apply(festivityRepository.findOne(id)));
+		} catch (Exception e) {
+			log.error("", e);
+			return Optional.empty();
+		}
+	}
 }

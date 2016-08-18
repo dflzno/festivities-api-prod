@@ -20,7 +20,7 @@ public class FromPersistentFestivityToDomainFestivityMapper
 		return t.stream().map(f -> apply(f)).collect(Collectors.toList());
 	}
 	
-	private com.github.dlozanoc.festapivity.application.domain.Festivity apply(FestivityEntity t) {
+	public com.github.dlozanoc.festapivity.application.domain.Festivity apply(FestivityEntity t) {
 		com.github.dlozanoc.festapivity.application.domain.Festivity fest = 
 				new com.github.dlozanoc.festapivity.application.domain.Festivity(
 						t.getId(), t.getName(), t.getStartDate(), t.getEndDate(), t.getPlace());

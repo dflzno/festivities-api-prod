@@ -1,6 +1,7 @@
 package com.github.dlozanoc.festapivity.application.integration;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.hateoas.ResourceSupport;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@XmlRootElement(name = "festivity")
 public class FestivityResource extends ResourceSupport {
 	
 	@XmlElement private Long festId;

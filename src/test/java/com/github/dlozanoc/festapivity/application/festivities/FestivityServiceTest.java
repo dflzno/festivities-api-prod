@@ -51,10 +51,8 @@ public class FestivityServiceTest {
 	public void shouldReturnAllFestivities() {
 		// given
 		List<FestivityEntity> dbFestivities = Arrays.asList(
-				new FestivityEntity(1L, "Cool fest", ZonedDateTime.now(), ZonedDateTime.now().plusHours(3),
-						"Wonderland"),
-				new FestivityEntity(2L, "Another cool fest", ZonedDateTime.now(), ZonedDateTime.now().plusHours(3),
-						"Wonderland"));
+				new FestivityEntity(1L, "Cool fest", ZonedDateTime.now(), ZonedDateTime.now().plusHours(3), "Wonderland"),
+				new FestivityEntity(2L, "Another cool fest", ZonedDateTime.now(), ZonedDateTime.now().plusHours(3), "Wonderland"));
 		when(festivityRepository.findAll()).thenReturn(dbFestivities);
 
 		// when
@@ -99,5 +97,29 @@ public class FestivityServiceTest {
 
 		// then
 		assertFalse(result);
+	}
+	
+	@Test
+	public void shouldFindFestivityById() {
+		// given
+		when(festivityRepository.findOne(1L)).thenReturn(new FestivityEntity(1L, "Cool fest", ZonedDateTime.now(), ZonedDateTime.now().plusHours(3), "Wonderland"));
+		
+		// when
+		Optional<Festivity> festivity = testSubject.getById(1L);
+		
+		// then
+		assertTrue(festivity.isPresent());
+	}
+	
+	@Test
+	public void shouldNotFindFestivityByIdDueToError() {
+		// given
+		when(festivityRepository.findOne(1L)).thenThrow(new HibernateException(""));
+		
+		// when
+		Optional<Festivity> festivity = testSubject.getById(1L);
+		
+		// then
+		assertFalse(festivity.isPresent());
 	}
 }
