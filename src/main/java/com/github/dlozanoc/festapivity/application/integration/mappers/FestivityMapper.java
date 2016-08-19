@@ -8,15 +8,17 @@ import org.springframework.stereotype.Component;
 import com.github.dlozanoc.festapivity.application.domain.Festivity;
 import com.github.dlozanoc.festapivity.application.integration.FestivityResource;
 
+import lombok.NonNull;
+
 @Component
 public class FestivityMapper implements Function<FestivityResource, Festivity> {
 
 	@Override
-	public Festivity apply(FestivityResource t) {
+	public Festivity apply(@NonNull FestivityResource t) {
 		return new Festivity(
-				null, 
+				t.getFestId(), 
 				t.getName(), 
-				ZonedDateTime.parse(t.getStartDate()), 
+				ZonedDateTime.parse(t.getStartDate()),
 				ZonedDateTime.parse(t.getEndDate()),  
 				t.getPlace());				
 	}
