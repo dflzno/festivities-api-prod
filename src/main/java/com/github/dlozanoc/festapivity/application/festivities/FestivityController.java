@@ -3,6 +3,7 @@ package com.github.dlozanoc.festapivity.application.festivities;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.dlozanoc.festapivity.application.domain.Festivity;
@@ -40,11 +43,16 @@ public class FestivityController {
 	private FestivityMapper festivityMapper;
 
 	@RequestMapping(value = "/api/festivity", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-	public ResponseEntity<FestivityListResource> getAll() {
+	public ResponseEntity<FestivityListResource> getAll(
+			@RequestParam(required = false) String name,
+			@RequestParam(required = false) String startDate,
+			@RequestParam(required = false) String endDate,
+			@RequestParam(required = false) String place) {
 		Optional<List<Festivity>> festivities = null;
 		
 		try {
-			festivities = festivityService.getAll();
+			festivities = searchFestivities(name, startDate, endDate, place);
+							
 			if(festivities.isPresent()) {
 				if(!festivities.get().isEmpty()) {
 					log.debug("Festivities found {}", festivities.get().stream().map(Object::toString).collect(Collectors.joining()));
@@ -58,7 +66,7 @@ public class FestivityController {
 					}
 					
 					FestivityListResource responseContent = new FestivityListResource(resources);
-					responseContent.add(linkTo(methodOn(FestivityController.class).getAll()).withSelfRel());
+					responseContent.add(linkTo(methodOn(FestivityController.class).getAll(name, startDate, endDate, place)).withSelfRel());
 					return new ResponseEntity<FestivityListResource>(responseContent, HttpStatus.OK);
 				}
 			} else {
@@ -106,4 +114,22 @@ public class FestivityController {
 		}
 		
 	}
+	
+	private Optional<List<Festivity>> searchFestivities(String name, String startDate, String endDate, String place) {
+		return isGetAll(name, startDate, endDate, place) ? 
+			festivityService.getAll() : 
+				festivityService.findBy(
+						name, 
+						StringUtils.isEmpty(startDate) ? null : ZonedDateTime.parse(startDate), 
+						StringUtils.isEmpty(endDate) ? null : ZonedDateTime.parse(endDate), 
+						place);
+	}
+	
+	private boolean isGetAll(String name, String startDate, String endDate, String place) {
+		return StringUtils.isEmpty(name) &&
+				StringUtils.isEmpty(startDate) &&
+				StringUtils.isEmpty(endDate) &&
+				StringUtils.isEmpty(place);
+	}
+	
 }

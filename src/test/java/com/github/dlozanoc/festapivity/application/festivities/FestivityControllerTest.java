@@ -60,7 +60,7 @@ public class FestivityControllerTest {
 		when(festivityService.getAll()).thenReturn(Optional.of(festivities));
 		
 		// when
-		ResponseEntity<FestivityListResource> response = testSubject.getAll();
+		ResponseEntity<FestivityListResource> response = testSubject.getAll(null, null, null, null);
 		
 		// then
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -73,7 +73,7 @@ public class FestivityControllerTest {
 		when(festivityService.getAll()).thenReturn(Optional.of(Collections.emptyList()));
 		
 		// when
-		ResponseEntity<FestivityListResource> response = testSubject.getAll();
+		ResponseEntity<FestivityListResource> response = testSubject.getAll(null, null, null, null);
 		
 		// then
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -86,7 +86,7 @@ public class FestivityControllerTest {
 		when(festivityService.getAll()).thenReturn(Optional.empty());
 		
 		// when
-		ResponseEntity<FestivityListResource> response = testSubject.getAll();
+		ResponseEntity<FestivityListResource> response = testSubject.getAll(null, null, null, null);
 		
 		// then
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());

@@ -1,5 +1,7 @@
 package com.github.dlozanoc.festapivity.application.festivities;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,5 +56,10 @@ public class FestivityService {
 			log.error("", e);
 			return Optional.empty();
 		}
+	}
+	
+	public Optional<List<Festivity>> findBy(String name, ZonedDateTime startDate, ZonedDateTime endDate, String place) {
+		
+		return Optional.of(new ArrayList<>());
 	}
 }
