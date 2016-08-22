@@ -17,7 +17,7 @@ public class FestivityResource extends ResourceSupport {
 	
 	@XmlElement private Long festId;
 	@XmlElement private String name;
-	@XmlElement private String startDate;
-	@XmlElement private String endDate;
+	@XmlElement(name = "start") private String startDate;
+	@XmlElement(name = "end") private String endDate;
 	@XmlElement private String place;
 }
