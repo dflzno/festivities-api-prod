@@ -1,4 +1,4 @@
-package com.github.dlozanoc.festapivity.integration.mappers;
+package com.github.dlozanoc.festapivity.application.integration.mappers;
 
 import static org.junit.Assert.assertNotNull;
 

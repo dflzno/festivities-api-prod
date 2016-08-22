@@ -30,12 +30,12 @@ public class InitialFestivitiesLoaderTest {
 	}
 
 	@Test
-	public void shouldLoadSixInitialFestivities() {
+	public void shouldLoad1000InitialFestivities() {
 		// when
 		testSubject.load();
 
 		// then
-		assertEquals(6, festivityRepository.count());
+		assertEquals(1000, festivityRepository.count());
 
 	}
 
