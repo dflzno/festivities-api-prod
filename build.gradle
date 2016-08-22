@@ -115,7 +115,6 @@ cargo {
 
 task printDeploymentMessage {
     println "To test the application browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/ping"
-    println "To get the API documentation browse to http://localhost:${cargo.ext.port}/${cargo.ext.context}/help"
 }
 
 cargoRunLocal.dependsOn (assemble, printDeploymentMessage)

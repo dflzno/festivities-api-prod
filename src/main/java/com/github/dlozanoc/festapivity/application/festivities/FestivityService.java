@@ -1,7 +1,6 @@
 package com.github.dlozanoc.festapivity.application.festivities;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,8 +30,8 @@ public class FestivityService {
 
 	public Optional<List<Festivity>> getAll() {
 		try {
-			return Optional.of(toDomainMapper.apply(
-					StreamSupport.stream(festivityRepository.findAll().spliterator(), false).collect(Collectors.toList())));
+			return Optional.of(toDomainMapper.apply(StreamSupport
+					.stream(festivityRepository.findAll().spliterator(), false).collect(Collectors.toList())));
 		} catch (Exception e) {
 			log.error("", e);
 			return Optional.empty();
@@ -48,7 +47,7 @@ public class FestivityService {
 			return false;
 		}
 	}
-	
+
 	public Optional<Festivity> getById(Long id) {
 		try {
 			return Optional.of(toDomainMapper.apply(festivityRepository.findOne(id)));
@@ -57,9 +56,12 @@ public class FestivityService {
 			return Optional.empty();
 		}
 	}
-	
+
 	public Optional<List<Festivity>> findBy(String name, ZonedDateTime startDate, ZonedDateTime endDate, String place) {
-		
-		return Optional.of(new ArrayList<>());
+		return Optional.of(toDomainMapper.apply(StreamSupport.stream(
+				festivityRepository
+					.findAll(FestivityQuerySpecification.withFilters(name, startDate, endDate, place)).spliterator(), false)
+					.collect(Collectors.toList())));
+
 	}
 }
